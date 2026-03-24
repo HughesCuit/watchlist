@@ -1,19 +1,21 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
-import path from 'path'
+const { app, BrowserWindow, ipcMain } = require('electron')
+const path = require('path')
 
-const mainWindow = new BrowserWindow({
-  width: 1200,
-  height: 800,
-  webPreferences: {
-    preload: path.join(__dirname, '../preload/index.js'),
-    nodeIntegration: false,
-    contextIsolation: true,
-  },
-})
+function createWindow() {
+  const mainWindow = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    webPreferences: {
+      preload: path.join(__dirname, '../preload/index.js'),
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+  })
 
-mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'))
+  mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'))
+}
 
-const store: any = {}
+const store = {}
 const preferences = { sortBy: 'addedAt', selectedStockId: null }
 
 ipcMain.handle('stock:getAll', () => {
@@ -72,11 +74,17 @@ ipcMain.handle('preference:set', (event, prefs) => {
 })
 
 app.whenReady().then(() => {
-  mainWindow.show()
+  createWindow()
 })
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
+  }
+})
+
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow()
   }
 })

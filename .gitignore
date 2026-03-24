@@ -1,0 +1,67 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Electron binary
+!node_modules/electron/dist/
+node_modules/electron/dist/electron.exe
+node_modules/electron/dist/*.exe
+
+# Build outputs
+dist/
+build/
+out/
+
+# Electron
+*.app/
+*.dmg
+*.deb
+*.rpm
+*.exe
+*.msi
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+.cache/
+
+# Test fixtures
+tests/fixtures/*.json
+!tests/fixtures/.gitkeep
+
+# Lock files (keep for npm install)
+!package-lock.json
+
+# Electron specific
+.cache/
+*.cache/
