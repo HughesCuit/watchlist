@@ -1,4 +1,4 @@
-# AGENTS.md
+﻿# AGENTS.md
 
 This repository is a project scaffolding framework for AI agents to build features systematically.
 
