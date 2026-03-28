@@ -62,8 +62,8 @@
 
 ### Implementation
 
-- [ ] T019 [P] [US4] Integrate TradingView Widget in src/renderer/components/KLineChart.ts
-- [ ] T020 [US4] Add stock selection handler in src/renderer/index.ts
+- [X] T019 [P] [US4] Integrate TradingView Widget in src/renderer/components/KLineChart.ts
+- [X] T020 [US4] Add stock selection handler in src/renderer/index.ts
 - [ ] T021 [US4] Implement time period switching (日线/周线/月线) in src/renderer/components/KLineChart.ts
 
 ### Tests
@@ -72,7 +72,7 @@
 
 ---
 
-## Phase 5: US5 - 本地数据持久化 (P1)
+## Phase 5: US5 - 本地数据持久化 (P1) ✅ Completed
 
 **Goal**: 应用重启后数据保留
 
@@ -80,9 +80,9 @@
 
 ### Implementation
 
-- [ ] T023 [P] [US5] Configure electron-store for persistence in src/main/store.ts
-- [ ] T024 [US5] Add auto-save on data changes in src/renderer/services/stockService.ts
-- [ ] T025 [US5] Implement data loading on app startup in src/main/index.ts
+- [X] T023 [P] [US5] Configure electron-store for persistence in src/main/store.ts
+- [X] T024 [US5] Add auto-save on data changes in src/renderer/services/stockService.ts
+- [X] T025 [US5] Implement data loading on app startup in src/main/index.ts
 
 ### Tests
 

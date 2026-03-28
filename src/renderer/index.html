@@ -44,6 +44,28 @@
       margin: 4px 0;
       border-radius: 4px;
     }
+    .kline-container {
+      width: 100%;
+      height: 500px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-top: 20px;
+    }
+    .kline-periods {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .kline-period-btn {
+      padding: 6px 12px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .kline-period-btn:hover { background: #0056b3; }
+    .kline-period-btn.active { background: #004494; }
   </style>
 </head>
 <body>
@@ -54,6 +76,13 @@
     <button class="button" onclick="resetData()">重置数据</button>
     <h2>自选股列表</h2>
     <ul class="stock-list" id="stockList"></ul>
+    <h2>K 线图</h2>
+    <div class="kline-container" id="klineContainer"></div>
+    <div class="kline-periods">
+      <button class="kline-period-btn" onclick="setPeriod('D')">日线</button>
+      <button class="kline-period-btn" onclick="setPeriod('W')">周线</button>
+      <button class="kline-period-btn" onclick="setPeriod('M')">月线</button>
+    </div>
     <h2>分类列表</h2>
     <ul class="category-list" id="categoryList"></ul>
   </div>
@@ -88,8 +117,21 @@
 
     async function selectStock(id) {
       preferences.selectedStockId = id
+      const stock = stocks.find((s) => s.id === id)
+      if (stock) {
+        setPeriod('D')
+        window.tradingViewWidget.setStock(stock.code)
+      }
       await window.electronAPI.preferences.set(preferences)
       render()
+    }
+
+    function setPeriod(period) {
+      window.tradingViewWidget.setPeriod(period)
+      const buttons = document.querySelectorAll('.kline-period-btn')
+      buttons.forEach((btn) => {
+        btn.classList.toggle('active', btn.innerText === period === period)
+      })
     }
 
     async function addStock() {
@@ -118,6 +160,24 @@
     }
 
     init()
+
+    // 监听股票选择
+    document.addEventListener('DOMContentLoaded', () => {
+      const klineContainer = document.getElementById('klineContainer')
+      if (klineContainer) {
+        klineContainer.addEventListener('click', async (e) => {
+          const target = e.target
+          if (target.classList.contains('stock-item')) {
+            const stockId = target.getAttribute('onclick').match(/'([^']+)'/)[1]
+            const stock = stocks.find((s) => s.id === stockId)
+            if (stock) {
+              await window.electronAPI.preferences.set(preferences)
+              selectStock(stock.id)
+            }
+          }
+        })
+      }
+    })
   </script>
 </body>
 </html>
