@@ -1,8 +1,13 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
+const crypto = require('crypto')
 
 const store = {}
 const preferences = { sortBy: 'addedAt', selectedStockId: null }
+
+function generateUUID() {
+  return crypto.randomUUID ? crypto.randomUUID() : crypto.randomBytes(16).toString('hex')
+}
 
 // Register IPC handlers
 ipcMain.handle('stock:getAll', () => {
@@ -12,7 +17,7 @@ ipcMain.handle('stock:getAll', () => {
 ipcMain.handle('stock:add', (event, stock) => {
   const stocks = store.stocks || []
   const newStock = {
-    id: crypto.randomUUID(),
+    id: generateUUID(),
     code: stock.code,
     name: stock.name,
     categoryId: null,
@@ -37,7 +42,7 @@ ipcMain.handle('category:getAll', () => {
 ipcMain.handle('category:add', (event, category) => {
   const categories = store.categories || []
   const newCategory = {
-    id: crypto.randomUUID(),
+    id: generateUUID(),
     name: category.name,
     createdAt: Date.now(),
   }
@@ -60,38 +65,6 @@ ipcMain.handle('preference:set', (event, prefs) => {
   Object.assign(preferences, prefs)
 })
 
-// IPC handlers for input dialogs
-ipcMain.handle('showInput', async (event, title, defaultValue) => {
-  const result = await new Promise((resolve) => {
-    const input = new window.dialogs.Input({
-      title: title || '输入',
-      type: 'input',
-      value: defaultValue,
-      default: defaultValue,
-      callback: (input) => {
-        resolve(input)
-      },
-    })
-    input.show()
-  })
-  return result
-})
-
-ipcMain.handle('showConfirm', async (event, message) => {
-  const result = await new Promise((resolve) => {
-    const dialog = new window.dialogs.Confirm({
-      type: 'question',
-      message: message,
-      default: true,
-      callback: (confirmed) => {
-        resolve(confirmed)
-      },
-    })
-    dialog.show()
-  })
-  return result
-})
-
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1200,
@@ -99,7 +72,7 @@ function createWindow() {
   webPreferences: {
     preload: path.join(__dirname, '../preload/index.js'),
     nodeIntegration: true,
-    contextIsolation: false,
+    contextIsolation: true,
   },
   })
 

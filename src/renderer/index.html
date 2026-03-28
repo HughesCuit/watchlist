@@ -66,6 +66,44 @@
     }
     .kline-period-btn:hover { background: #0056b3; }
     .kline-period-btn.active { background: #004494; }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal.show { display: flex; }
+    #inputModal.show { display: flex; }
+    #confirmModal.show { display: flex; }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      min-width: 300px;
+    }
+    .modal-title { font-size: 18px; margin-bottom: 15px; }
+    .modal-input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .modal-buttons { display: flex; gap: 10px; justify-content: flex-end; }
+    .modal-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .modal-btn.primary { background: #007bff; color: white; }
+    .modal-btn.secondary { background: #e0e0e0; }
   </style>
 </head>
 <body>
@@ -85,6 +123,29 @@
     </div>
     <h2>分类列表</h2>
     <ul class="category-list" id="categoryList"></ul>
+  </div>
+
+  <!-- Modal for input -->
+  <div class="modal" id="inputModal">
+    <div class="modal-content">
+      <div class="modal-title" id="modalTitle">输入</div>
+      <input type="text" class="modal-input" id="modalInput" placeholder="请输入...">
+      <div class="modal-buttons">
+        <button class="modal-btn secondary" onclick="closeModal()">取消</button>
+        <button class="modal-btn primary" onclick="submitModal()">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for confirm -->
+  <div class="modal" id="confirmModal">
+    <div class="modal-content">
+      <div class="modal-title" id="confirmMessage">确定要执行此操作吗？</div>
+      <div class="modal-buttons">
+        <button class="modal-btn secondary" onclick="closeConfirmModal()">取消</button>
+        <button class="modal-btn primary" onclick="confirmAction()">确定</button>
+      </div>
+    </div>
   </div>
   <script>
     let stocks = []
@@ -134,47 +195,93 @@
       })
     }
 
-    // Use IPC to show input dialogs
-    async function showStockInput() {
-      try {
-        const stockData = await window.electronAPI.showInput('股票代码', 'AAPL')
-        if (stockData && stockData.code) {
-          const stock = await window.electronAPI.stocks.add({ code: stockData.code })
+    // Modal functions
+    let modalCallback = null
+
+    function showModal(title, placeholder, callback) {
+      document.getElementById('modalTitle').textContent = title
+      document.getElementById('modalInput').placeholder = placeholder
+      document.getElementById('modalInput').value = ''
+      document.getElementById('inputModal').classList.remove('show')
+      document.getElementById('inputModal').classList.add('show')
+      modalCallback = callback
+      setTimeout(() => {
+        const input = document.getElementById('modalInput')
+        input.focus()
+        input.select()
+      }, 100)
+    }
+
+    function closeModal() {
+      document.getElementById('inputModal').classList.remove('show')
+      modalCallback = null
+    }
+
+    function submitModal() {
+      const value = document.getElementById('modalInput').value
+      if (modalCallback) {
+        modalCallback(value)
+      }
+      closeModal()
+    }
+
+    let confirmCallback = null
+
+    function showConfirmModal(message, callback) {
+      document.getElementById('confirmMessage').textContent = message
+      document.getElementById('confirmModal').classList.add('show')
+      confirmCallback = callback
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('confirmModal').classList.remove('show')
+      confirmCallback = null
+    }
+
+    function confirmAction() {
+      if (confirmCallback) {
+        confirmCallback()
+      }
+      closeConfirmModal()
+    }
+
+    // Button handlers
+    function showStockInput() {
+      showModal('添加股票', '请输入股票代码 (如：AAPL)', async (code) => {
+        if (code) {
+          const stock = await window.electronAPI.stocks.add({ code: code })
           alert(`添加了股票：${stock.code}`)
           render()
         }
-      } catch (error) {
-        console.error('Add stock failed:', error)
-      }
+      })
     }
 
-    async function showCategoryInput() {
-      try {
-        const categoryData = await window.electronAPI.showInput('分类名称', '')
-        if (categoryData && categoryData.name) {
-          const category = await window.electronAPI.categories.add({ name: categoryData.name })
+    function showCategoryInput() {
+      showModal('创建分类', '请输入分类名称', async (name) => {
+        if (name) {
+          const category = await window.electronAPI.categories.add({ name: name })
           alert(`创建了分类：${category.name}`)
           render()
         }
-      } catch (error) {
-        console.error('Add category failed:', error)
-      }
+      })
     }
 
-    async function showResetConfirm() {
-      try {
-        const confirmed = await window.electronAPI.showConfirm('确定要删除所有数据吗？')
-        if (confirmed) {
-          await window.electronAPI.preferences.set({ sortBy: 'addedAt', selectedStockId: null })
-          stocks = []
-          categories = []
-          render()
-          alert('数据已重置')
-        }
-      } catch (error) {
-        console.error('Reset failed:', error)
-      }
+    function showResetConfirm() {
+      showConfirmModal('确定要删除所有数据吗？', async () => {
+        await window.electronAPI.preferences.set({ sortBy: 'addedAt', selectedStockId: null })
+        stocks = []
+        categories = []
+        render()
+        alert('数据已重置')
+      })
     }
+
+    // Close modal on Enter key
+    document.getElementById('modalInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        submitModal()
+      }
+    })
 
     init()
 
