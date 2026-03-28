@@ -2,10 +2,12 @@
   "name": "watchlist",
   "version": "1.0.0",
   "description": "股票自选股管理 + K 线图展示 MVP",
+  "author": "HughesCuit <hughes.cuit@github.com>",
+  "license": "MIT",
   "main": "src/main/main.js",
   "scripts": {
-    "start": "electron .",
     "dev": "electron .",
+    "start": "electron .",
     "test": "vitest",
     "test:e2e": "playwright test",
     "build": "electron-builder"

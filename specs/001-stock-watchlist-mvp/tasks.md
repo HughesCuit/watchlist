@@ -12,27 +12,27 @@
 
 ---
 
-## Phase 1: Setup (Project Initialization)
+## Phase 1: Setup (Project Initialization) ✅ Completed
 
-- [ ] T001 Initialize Electron project with TypeScript in src/main/index.ts
-- [ ] T002 [P] Create package.json with dependencies: electron, electron-builder, electron-store, vitest in package.json
-- [ ] T003 [P] Configure TypeScript (tsconfig.json) and build tools in tsconfig.json
-- [ ] T004 Create project directory structure: src/main, src/renderer, src/preload, src/shared, tests/unit, tests/e2e in src/main, src/renderer, src/preload, src/shared, tests/unit, tests/e2e
-
----
-
-## Phase 2: Foundational (Blocking Prerequisites)
-
-- [ ] T005 Create shared TypeScript types in src/shared/types.ts
-- [ ] T006 Implement electron-store wrapper in src/main/store.ts
-- [ ] T007 Create preload script with IPC bridge in src/preload/index.ts
-- [ ] T008 Set up Electron main process entry in src/main/index.ts
-- [ ] T009 Create renderer entry HTML and TypeScript in src/renderer/index.html and src/renderer/index.ts
-- [ ] T010 Configure logging and error handling in src/main/index.ts
+- [X] T001 Initialize Electron project with TypeScript in src/main/index.ts
+- [X] T002 [P] Create package.json with dependencies: electron, electron-builder, electron-store, vitest in package.json
+- [X] T003 [P] Configure TypeScript (tsconfig.json) and build tools in tsconfig.json
+- [X] T004 Create project directory structure: src/main, src/renderer, src/preload, src/shared, tests/unit, tests/e2e in src/main, src/renderer, src/preload, src/shared, tests/unit, tests/e2e
 
 ---
 
-## Phase 3: US1 - 添加和管理自选股 (P1)
+## Phase 2: Foundational (Blocking Prerequisites) ✅ Completed
+
+- [X] T005 Create shared TypeScript types in src/shared/types.ts
+- [X] T006 Implement electron-store wrapper in src/main/store.ts
+- [X] T007 Create preload script with IPC bridge in src/preload/index.ts
+- [X] T008 Set up Electron main process entry in src/main/index.ts
+- [X] T009 Create renderer entry HTML and TypeScript in src/renderer/index.html and src/renderer/index.ts
+- [X] T010 Configure logging and error handling in src/main/index.ts
+
+---
+
+## Phase 3: US1 - 添加和管理自选股 (P1) ✅ Completed
 
 **Goal**: 用户可以添加、删除、查看自选股
 
@@ -40,12 +40,12 @@
 
 ### Implementation
 
-- [ ] T011 [P] [US1] Define Stock type and validation in src/shared/types.ts
-- [ ] T012 [P] [US1] Implement stock service with CRUD methods in src/renderer/services/stockService.ts
-- [ ] T013 [US1] Register IPC handlers for stock operations in src/main/index.ts
-- [ ] T014 [US1] Build StockList UI component in src/renderer/components/StockList.ts
-- [ ] T015 [US1] Build StockItem UI component in src/renderer/components/StockItem.ts
-- [ ] T016 [US1] Connect UI to stock service in src/renderer/index.ts
+- [X] T011 [P] [US1] Define Stock type and validation in src/shared/types.ts
+- [X] T012 [P] [US1] Implement stock service with CRUD methods in src/renderer/services/stockService.ts
+- [X] T013 [US1] Register IPC handlers for stock operations in src/main/index.ts
+- [X] T014 [US1] Build StockList UI component in src/renderer/components/StockList.ts
+- [X] T015 [US1] Build StockItem UI component in src/renderer/components/StockItem.ts
+- [X] T016 [US1] Connect UI to stock service in src/renderer/index.ts
 
 ### Tests
 
