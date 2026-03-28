@@ -71,9 +71,9 @@
 <body>
   <div class="container">
     <h1>股票自选股管理</h1>
-    <button class="button" onclick="addStock()">+ 添加股票</button>
-    <button class="button" onclick="addCategory()">+ 创建分类</button>
-    <button class="button" onclick="resetData()">重置数据</button>
+    <button class="button" onclick="showStockInput()">+ 添加股票</button>
+    <button class="button" onclick="showCategoryInput()">+ 创建分类</button>
+    <button class="button" onclick="showResetConfirm()">重置数据</button>
     <h2>自选股列表</h2>
     <ul class="stock-list" id="stockList"></ul>
     <h2>K 线图</h2>
@@ -134,28 +134,45 @@
       })
     }
 
-    async function addStock() {
-      const code = prompt('请输入股票代码 (如：AAPL):')
-      if (!code) return
-      const stock = await window.electronAPI.stocks.add({ code })
-      alert(`添加了股票：${stock.code}`)
-      render()
+    // Use IPC to show input dialogs
+    async function showStockInput() {
+      try {
+        const stockData = await window.electronAPI.showInput('股票代码', 'AAPL')
+        if (stockData && stockData.code) {
+          const stock = await window.electronAPI.stocks.add({ code: stockData.code })
+          alert(`添加了股票：${stock.code}`)
+          render()
+        }
+      } catch (error) {
+        console.error('Add stock failed:', error)
+      }
     }
 
-    async function addCategory() {
-      const name = prompt('请输入分类名称:')
-      if (!name) return
-      const category = await window.electronAPI.categories.add({ name })
-      alert(`创建了分类：${category.name}`)
-      render()
+    async function showCategoryInput() {
+      try {
+        const categoryData = await window.electronAPI.showInput('分类名称', '')
+        if (categoryData && categoryData.name) {
+          const category = await window.electronAPI.categories.add({ name: categoryData.name })
+          alert(`创建了分类：${category.name}`)
+          render()
+        }
+      } catch (error) {
+        console.error('Add category failed:', error)
+      }
     }
 
-    async function resetData() {
-      if (confirm('确定要删除所有数据吗？')) {
-        await window.electronAPI.preferences.set({ sortBy: 'addedAt', selectedStockId: null })
-        stocks = []
-        categories = []
-        render()
+    async function showResetConfirm() {
+      try {
+        const confirmed = await window.electronAPI.showConfirm('确定要删除所有数据吗？')
+        if (confirmed) {
+          await window.electronAPI.preferences.set({ sortBy: 'addedAt', selectedStockId: null })
+          stocks = []
+          categories = []
+          render()
+          alert('数据已重置')
+        }
+      } catch (error) {
+        console.error('Reset failed:', error)
       }
     }
 

@@ -60,15 +60,47 @@ ipcMain.handle('preference:set', (event, prefs) => {
   Object.assign(preferences, prefs)
 })
 
+// IPC handlers for input dialogs
+ipcMain.handle('showInput', async (event, title, defaultValue) => {
+  const result = await new Promise((resolve) => {
+    const input = new window.dialogs.Input({
+      title: title || '输入',
+      type: 'input',
+      value: defaultValue,
+      default: defaultValue,
+      callback: (input) => {
+        resolve(input)
+      },
+    })
+    input.show()
+  })
+  return result
+})
+
+ipcMain.handle('showConfirm', async (event, message) => {
+  const result = await new Promise((resolve) => {
+    const dialog = new window.dialogs.Confirm({
+      type: 'question',
+      message: message,
+      default: true,
+      callback: (confirmed) => {
+        resolve(confirmed)
+      },
+    })
+    dialog.show()
+  })
+  return result
+})
+
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
-    webPreferences: {
-      preload: path.join(__dirname, '../preload/index.js'),
-      nodeIntegration: false,
-      contextIsolation: true,
-    },
+  webPreferences: {
+    preload: path.join(__dirname, '../preload/index.js'),
+    nodeIntegration: true,
+    contextIsolation: false,
+  },
   })
 
   mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'))

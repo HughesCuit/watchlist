@@ -15,6 +15,11 @@ const electronAPI = {
     get: () => ipcRenderer.invoke('preference:get'),
     set: (prefs) => ipcRenderer.invoke('preference:set', prefs),
   },
+  showInput: (title, defaultValue) => ipcRenderer.invoke('showInput', title, defaultValue),
+  showConfirm: (message) => ipcRenderer.invoke('showConfirm', message),
 }
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI)
+
+// Expose dialogs module for input/confirm dialogs
+contextBridge.exposeInMainWorld('dialogs', window.dialogs)
