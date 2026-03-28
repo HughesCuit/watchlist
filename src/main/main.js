@@ -1,4 +1,5 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const electron = require('electron')
+const { app, BrowserWindow, ipcMain } = electron
 const path = require('path')
 
 function createWindow() {
@@ -18,11 +19,11 @@ function createWindow() {
 const store = {}
 const preferences = { sortBy: 'addedAt', selectedStockId: null }
 
-ipcMain.handle('stock:getAll', () => {
+ipcMain.on('stock:getAll', () => {
   return store.stocks || []
 })
 
-ipcMain.handle('stock:add', (event, stock) => {
+ipcMain.on('stock:add', (event, stock) => {
   const stocks = store.stocks || []
   const newStock = {
     id: crypto.randomUUID(),
@@ -37,17 +38,17 @@ ipcMain.handle('stock:add', (event, stock) => {
   return newStock
 })
 
-ipcMain.handle('stock:remove', (event, id) => {
+ipcMain.on('stock:remove', (event, id) => {
   const stocks = store.stocks || []
   const result = stocks.filter((s) => s.id !== id)
   store.stocks = result
 })
 
-ipcMain.handle('category:getAll', () => {
+ipcMain.on('category:getAll', () => {
   return store.categories || []
 })
 
-ipcMain.handle('category:add', (event, category) => {
+ipcMain.on('category:add', (event, category) => {
   const categories = store.categories || []
   const newCategory = {
     id: crypto.randomUUID(),
@@ -59,17 +60,17 @@ ipcMain.handle('category:add', (event, category) => {
   return newCategory
 })
 
-ipcMain.handle('category:remove', (event, id) => {
+ipcMain.on('category:remove', (event, id) => {
   const categories = store.categories || []
   const result = categories.filter((c) => c.id !== id)
   store.categories = result
 })
 
-ipcMain.handle('preference:get', () => {
+ipcMain.on('preference:get', () => {
   return preferences
 })
 
-ipcMain.handle('preference:set', (event, prefs) => {
+ipcMain.on('preference:set', (event, prefs) => {
   Object.assign(preferences, prefs)
 })
 
