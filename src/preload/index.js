@@ -1,6 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
-contextBridge.exposeInMainWorld('electronAPI', {
+const electronAPI = {
   stocks: {
     getAll: () => ipcRenderer.invoke('stock:getAll'),
     add: (stock) => ipcRenderer.invoke('stock:add', stock),
@@ -15,4 +15,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     get: () => ipcRenderer.invoke('preference:get'),
     set: (prefs) => ipcRenderer.invoke('preference:set', prefs),
   },
-})
+}
+
+contextBridge.exposeInMainWorld('electronAPI', electronAPI)
