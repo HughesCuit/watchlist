@@ -10,6 +10,7 @@ export interface Stock {
 export interface Category {
   id: string
   name: string
+  prefix?: string
   createdAt: number
 }
 
@@ -31,4 +32,5 @@ export interface StockData {
 
 export interface CategoryData {
   name: string
+  prefix?: string
 }
